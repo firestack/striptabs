@@ -1,2 +1,2 @@
 # Strip tabs
-a flake for tabs in nix
+A flake for tabs in nix strings
