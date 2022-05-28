@@ -27,5 +27,18 @@
 
 		fn = self.lib.stripTabs;
 		stripTabs = self.lib.stripTabs;
+		
+
+		/*
+		# Utility Access via `pkgs`
+		E.g.
+			```callPackage ./package.nix { }; # provides `stripTabs` as requested by name```
+		or
+			```pkgs.stripTabs ''<multiline-tab-indented-string>''```
+		*/
+		overlays.stripTabs = final: prev: {
+			stripTabs = stripTabsFn final.lib;
+		};
+		overlay = self.overlays.stripTabs;
 	};
 }
