@@ -17,6 +17,15 @@
 
 		lib.stripTabs = stripTabsFn nixpkgs.lib;
 
+		/*
+		# QOL Utilitiy Attributes
+		Eg
+			``` inherit (flakes.striptabs) stripTabs;```
+		or 
+			``` flakes.striptabs.fn ''<multiline-tab-indented-string>'' ```;
+		*/
 
+		fn = self.lib.stripTabs;
+		stripTabs = self.lib.stripTabs;
 	};
 }
