@@ -1,10 +1,8 @@
 {
 	description = "Strip tabs, for when nix fails you";
 
-	outputs = { self, nixpkgs }: let inherit (nixpkgs) lib; in {
-		# Packaged from https://github.com/NixOS/nix/issues/3759#issuecomment-653033810
-
-		lib.stripTabs = text: let
+	outputs = { self, nixpkgs }: let 
+		stripTabsFn = lib: text: let
 			# Whether all lines start with a tab (or is empty)
 			shouldStripTab = lines: builtins.all (line: (line == "") || (lib.strings.hasPrefix "	" line)) lines;
 			# Strip a leading tab from all lines
@@ -14,7 +12,33 @@
 		in
 			# Split into lines. Strip leading tabs. Concat back to string.
 			builtins.concatStringsSep "\n" (stripTabs (lib.strings.splitString "\n" text));
+	in {
+		# Packaged from https://github.com/NixOS/nix/issues/3759#issuecomment-653033810
 
+		lib.stripTabs = stripTabsFn nixpkgs.lib;
 
+		/*
+		# QOL Utilitiy Attributes
+		Eg
+			``` inherit (flakes.striptabs) stripTabs;```
+		or 
+			``` flakes.striptabs.fn ''<multiline-tab-indented-string>'' ```;
+		*/
+
+		fn = self.lib.stripTabs;
+		stripTabs = self.lib.stripTabs;
+		
+
+		/*
+		# Utility Access via `pkgs`
+		E.g.
+			```callPackage ./package.nix { }; # provides `stripTabs` as requested by name```
+		or
+			```pkgs.stripTabs ''<multiline-tab-indented-string>''```
+		*/
+		overlays.stripTabs = final: prev: {
+			stripTabs = stripTabsFn final.lib;
+		};
+		overlay = self.overlays.stripTabs;
 	};
 }
