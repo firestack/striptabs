@@ -36,9 +36,10 @@
 		or
 			```pkgs.stripTabs ''<multiline-tab-indented-string>''```
 		*/
+		overlays.default = self.overlays.stripTabs;
+
 		overlays.stripTabs = final: prev: {
 			stripTabs = stripTabsFn final.lib;
 		};
-		overlay = self.overlays.stripTabs;
 	};
 }
