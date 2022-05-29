@@ -5,6 +5,7 @@
 
 		inherit (nixpkgs) lib;
 
+		# Packaged from https://github.com/NixOS/nix/issues/3759#issuecomment-653033810
 		stripTabsFn = lib: text: let
 			# Whether all lines start with a tab (or is empty)
 			shouldStripTab = lines: builtins.all (line: (line == "") || (lib.strings.hasPrefix "	" line)) lines;
@@ -16,7 +17,6 @@
 			# Split into lines. Strip leading tabs. Concat back to string.
 			builtins.concatStringsSep "\n" (stripTabs (lib.strings.splitString "\n" text));
 	in {
-		# Packaged from https://github.com/NixOS/nix/issues/3759#issuecomment-653033810
 
 		lib.stripTabs = stripTabsFn nixpkgs.lib;
 
