@@ -2,6 +2,9 @@
 	description = "Strip tabs, for when nix fails you";
 
 	outputs = { self, nixpkgs }: let 
+
+		inherit (nixpkgs) lib;
+
 		stripTabsFn = lib: text: let
 			# Whether all lines start with a tab (or is empty)
 			shouldStripTab = lines: builtins.all (line: (line == "") || (lib.strings.hasPrefix "	" line)) lines;
