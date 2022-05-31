@@ -1,7 +1,7 @@
 {
 	description = "Strip tabs, for when nix fails you";
 
-	outputs = { self, nixpkgs }: let 
+	outputs = { self, nixpkgs }: let
 
 		inherit (nixpkgs) lib;
 
@@ -27,13 +27,13 @@
 		# QOL Utilitiy Attributes
 		Eg
 			``` inherit (flakes.striptabs) stripTabs;```
-		or 
+		or
 			``` flakes.striptabs.fn ''<multiline-tab-indented-string>'' ```;
 		*/
 
 		fn = self.lib.stripTabs;
 		stripTabs = self.lib.stripTabs;
-		
+
 
 		/*
 		# Utility Access via `pkgs`
@@ -86,7 +86,7 @@
 						self.nixTests.text.eval);
 
 			output = assert self.nixTests.text.result; self.nixTests.text.eval;
-			eval = builtins.mapAttrs 
+			eval = builtins.mapAttrs
 				(test_name: test_config: builtins.tryEval (let evalTest = {
 					inherit test_config;
 					result = self.nixTests.text.fn.assertMsg test_name test_config;
@@ -135,7 +135,7 @@
 					'';
 					expected = "indent0\n";
 				};
-				
+
 				trivial_newline2 = {
 					input = ''
 						indent0
@@ -152,7 +152,7 @@
 								indent0'';
 					expected = "indent0\nindent0\nindent0";
 				};
-				
+
 				trivial_indent = {
 					input = ''
 						indent0
@@ -190,7 +190,7 @@
 
 						::  Expected ::
 						''${config.expected}
-						
+
 						::  Recieved ::
 						''${output}
 					'';
@@ -210,7 +210,7 @@
 
 						::  Expected ::
 						''${config.expected}
-						
+
 						::  Recieved ::
 						''${output}
 					'';
