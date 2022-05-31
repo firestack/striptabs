@@ -58,25 +58,34 @@
 				predicate = case: (case.config.expected == case.output);
 
 				errorMessage = let
-					makePrintable = string: builtins.replaceStrings [ 
+					makePrintable = string: builtins.replaceStrings [
 						" "
 						"\t"
 						"\n"
 					] [
-						"·"
+						"␠"
 						"→"
-						"\\n"
+						"␤\n"
 					] string;
-				in test_name: { config, output }: (self.stripTabs ''
+				in test_name: { config, output }: ( lib.strings.concatStringsSep "" (map self.stripTabs [''
+
 					:: Error In Test :: ${test_name}
 					`input` differs from `expected`
 
-					::  Expected ::
-					${makePrintable config.expected}
-					
-					::  Recieved ::
-					${makePrintable output}
-				'');
+					::==  Expected ==::
+					''
+					(makePrintable config.expected)
+					''
+
+					::==  Recieved ==::
+					''
+					(makePrintable output)
+					''
+
+					::== Raw Input ==::
+					''
+					(makePrintable config.input)
+				]));
 			};
 
 			result = builtins.all
