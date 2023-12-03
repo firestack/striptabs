@@ -20,7 +20,10 @@
 	in {
 		# Packaged from https://github.com/NixOS/nix/issues/3759#issuecomment-653033810
 
-		lib.stripTabs = stripTabsFn nixpkgs.lib;
+		lib = overlays.stripTabs nixpkgs {};
+
+		# lib.stripTabs = stripTabsFn nixpkgs.lib;
+
 
 		/*
 		# QOL Utilitiy Attributes
@@ -43,8 +46,14 @@
 		*/
 		overlays.default = self.overlays.stripTabs;
 
-		overlays.stripTabs = final: prev: {
+		overlays.stripTabs = final: prev: let
 			stripTabs = stripTabsFn final.lib;
+		in {
+			inherit stripTabs;
+			
+			stripTabsInSegments = segments:
+				(final.lib.concatStringsSep "\n")
+				(map (stripTabs final.lib) segments)
 		};
 	};
 }
